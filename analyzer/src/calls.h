@@ -72,6 +72,7 @@ typedef struct __parent_call_data
 typedef struct __call_data
 {
 	call_type_t type;
+	uint64_t total_time_without_children;
 	uint64_t call_id;
 	std::string *name;
 	std::vector<uint64_t> *exectimes;

@@ -1,0 +1,7 @@
+/home/lqp0562/sgx-perf/examples/Benchmark/CMakeFiles/rebuild_cache.dir
+/home/lqp0562/sgx-perf/examples/Benchmark/CMakeFiles/edit_cache.dir
+/home/lqp0562/sgx-perf/examples/Benchmark/CMakeFiles/benchappsim.dir
+/home/lqp0562/sgx-perf/examples/Benchmark/CMakeFiles/benchapp.dir
+/home/lqp0562/sgx-perf/examples/Benchmark/CMakeFiles/benchenclave.dir
+/home/lqp0562/sgx-perf/examples/Benchmark/CMakeFiles/benchenclavesim.dir
+/home/lqp0562/sgx-perf/examples/Benchmark/CMakeFiles/generate_key_bench.dir

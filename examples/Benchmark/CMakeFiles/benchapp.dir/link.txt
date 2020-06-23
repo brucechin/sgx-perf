@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/benchapp.dir/src/app.o CMakeFiles/benchapp.dir/src/enclave_u.o  -o benchapp -lpthread 

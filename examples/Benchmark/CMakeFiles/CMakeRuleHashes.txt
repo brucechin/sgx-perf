@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+404cdcba538d5f2209c738d84af5ba09 CMakeFiles/generate_key_bench
+b2729a9f29cb3374c4d190fa38e076b4 misc/enclave.pem
+4aea090ddd1f1af25316945a41ce6968 src/enclave_u.c

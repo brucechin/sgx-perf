@@ -29,11 +29,59 @@ void draw_graphs()
 	dotfile.close();
 }
 
+uint64_t sum_exetime(call_data_t* cd){
+	std::vector<uint64_t> *vec = cd->exectimes;
+	uint64_t res = 0;
+	for(int i = 0; i < vec->size(); i++){
+		res += (*vec)[i];
+	}
+	return res/1000000;//microsecond
+}
+
+// uint64_t sum_exetime_delete_children(call_data_t* cd){
+// 	uint64_t res = sum_exetime(cd);
+// 	for(int i = 0; i < cd->direct_parents_data->size(); i++){
+// 		res -= sum_exetime((*cd->direct_parents_data)[i].call_data);
+// 	}
+// 	return res;
+// }
+
 std::string dot_graph(uint64_t eid)
 {
 	std::stringstream ss;
+	std::for_each(encls[eid].ecalls.begin(), encls[eid].ecalls.end(), [&ss] (call_data_t *cd) {
+		cd->total_time_without_children = sum_exetime(cd);
+	});
+	std::for_each(encls[eid].ocalls.begin(), encls[eid].ocalls.end(), [&ss] (call_data_t *cd) {
+		cd->total_time_without_children = sum_exetime(cd);
+	});
+	std::for_each(encls[eid].ecalls.begin(), encls[eid].ecalls.end(), [&ss] (call_data_t *cd) {
+		for (uint64_t i = 0; i < cd->direct_parents_data->size(); ++i)
+		{
+			auto &dpcd = cd->direct_parents_data->at(i);
+			if (skip_call(dpcd.call_data, config.ocall_set))
+			{
+				continue;
+			}
+			dpcd.call_data->total_time_without_children -= cd->total_time_without_children * (float(dpcd.count) / cd->exectimes->size());
+		}
+	});
+	std::for_each(encls[eid].ocalls.begin(), encls[eid].ocalls.end(), [&ss] (call_data_t *cd) {
+		for (uint64_t i = 0; i < cd->direct_parents_data->size(); ++i)
+		{
+			auto &dpcd = cd->direct_parents_data->at(i);
+			if (skip_call(dpcd.call_data, config.ocall_set))
+			{
+				continue;
+			}
+			dpcd.call_data->total_time_without_children -= cd->total_time_without_children * (float(dpcd.count) / cd->exectimes->size());
+		}
+	});
+	//remove all direct children's execution time from the total time.
 
 	ss << "digraph Enclave_" << eid << " {" << std::endl;
+
+
 
 	std::for_each(encls[eid].ecalls.begin(), encls[eid].ecalls.end(), [&ss] (call_data_t *cd) {
 		if (skip_call(cd, config.ecall_set))
@@ -41,7 +89,7 @@ std::string dot_graph(uint64_t eid)
 			return;
 		}
 
-		ss << "\t" << *cd->name << " [shape=box,label=\"[" << cd->call_id << "] " << *cd->name << "\"];" << std::endl;
+		ss << "\t" << *cd->name << " [shape=box,label=\"[" << cd->call_id << "] " << *cd->name << " "  << cd->total_time_without_children<< " millisecond \"];" << std::endl;
 
 
 		for (uint64_t i = 0; i < cd->indirect_parents_data->size(); ++i)
@@ -71,7 +119,7 @@ std::string dot_graph(uint64_t eid)
 			return;
 		}
 
-		ss << "\t" << *cd->name << " [label=\"[" << cd->call_id << "] " << *cd->name << "\"];" << std::endl;
+		ss << "\t" << *cd->name << " [label=\"[" << cd->call_id << "] " << *cd->name<< " "<< cd->total_time_without_children << " millisecond \"];" << std::endl;
 
 		for (uint64_t i = 0; i < cd->indirect_parents_data->size(); ++i)
 		{

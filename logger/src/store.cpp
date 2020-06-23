@@ -525,7 +525,7 @@ void sgxperf::EventStore::create_summary()
 
 	std::cout << "(i) Close all binary files" << std::endl;
 	// Close all opened binary files
-	closeAllFiles();
+	//closeAllFiles();
 
 	std::cout << "(i) Creating DB indices" << std::endl;
 	const char *indices = ""

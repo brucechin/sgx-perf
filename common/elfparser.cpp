@@ -33,14 +33,18 @@ static std::map<std::string, int> *get_file_map()
  */
 void closeAllFiles()
 {
+	printf("start file\n");
 	auto file_map = get_file_map();
 	auto it = file_map->begin();
+	
 	while (it != file_map->end())
 	{
 		close(it->second);
 		file_map->erase(it);
 		it++;
+
 	}
+	printf("done close file\n");
 }
 
 /*
